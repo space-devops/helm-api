@@ -1,0 +1,71 @@
+global:
+  prefix: api
+  version: 0.1.0
+
+namespace:
+  name: mountebank
+
+annotations:
+  imposters.helm.created-by: "helm-api-installer"
+
+main:
+  deployment:
+    replicas: 1
+    image:
+      name: "dockvalkyrie/api-mountebank"
+      version: "0.6.5"
+    resources:
+      request:
+        memory: 512Mi
+        cpu: 256m
+      limits:
+        memory: 1536Mi
+        cpu: 1000m
+  security:
+    context:
+      userId: 65532
+      isRoot: false
+      isPrivileged: false
+  service:
+    type: ClusterIP
+    ports:
+      - 3000
+      - 2000
+    healthCheck:
+      readiness:
+        path: /ready
+        port: 3000
+        delay: 3
+        period: 3
+      liveness:
+        path: /live
+        port: 3000
+        delay: 3
+        period: 3
+        failures: 2
+  ingress:
+    ingressClassName: contour
+    host: mountebank.local.io
+    paths:
+      - "/"
+      - "/planets"
+      - "/planet"
+    port: 3000
+
+init:
+  deployment:
+    image:
+      name: "dockvalkyrie/mountebank-imposters"
+      version: "0.7.8"
+    resources:
+      request:
+        memory: 128Mi
+        cpu: 256m
+      limits:
+        memory: 256Mi
+        cpu: 512m
+  security:
+    context:
+      userId: 1000
+      isRoot: false
+      isPrivileged: false

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "deployment.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    name: {{ template "deployment.fullname" . }}
+    version: {{ .Values.global.version }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4}}
+spec:
+  replicas: {{ .Values.main.deployment.replicas  }}
+  selector:
+    matchLabels:
+      name: {{ template "main.pod.fullname" . }}
+      version: {{ .Values.global.version }}
+  template:
+    metadata:
+      name: {{ template "main.pod.fullname" . }}
+      namespace: {{ .Values.namespace.name }}
+      labels:
+        name: {{ template "main.pod.fullname" . }}
+        version: {{ .Values.global.version }}
+    spec:
+      initContainers:
+        - name: {{ template "init.container.fullname" . }}
+          image: {{ template "init.container.image" . }}
+          {{- include "init.container.resources" . | indent 10 }}
+          {{- include "init.container.security.context" . | indent 10 }}
+      containers:
+        - name: {{ template "main.container.fullname" . }}
+          image: {{ template "main.container.image" . }}
+          imagePullPolicy: Always
+          {{- include "main.container.port.range" . | indent 10 }}
+          {{- include "main.container.readiness" . | indent 10 }}
+          {{- include "main.container.liveness" . | indent 10 }}
+          {{- include "main.container.resources" . | indent 10 }}
+          {{- include "main.container.security.context" . | indent 10 }}
+          volumeMounts:
+            - mountPath: /home/nonroot/.imposters/
+              name: config-volume
+      volumes:
+        - name: config-volume
+          configMap:
+            name: api-configmap
