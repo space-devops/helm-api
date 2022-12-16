@@ -1,3 +1,4 @@
+{{- if .Values.main.ingress.istio.enable }}
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -26,9 +27,10 @@ spec:
     - mountebank-gateway
   http:
     - match:
-        {{- include "main.ingress.matchers" . | indent 8 }}
+          {{- include "main.ingress.istio.matchers" . | indent 8 }}
       route:
         - destination:
             port:
               number: {{ .Values.main.ingress.port }}
             host: {{ template "main.service.fullname" . }}
+{{- end -}}
