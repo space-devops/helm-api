@@ -110,11 +110,27 @@ resources:
     memory: {{ .Values.init.deployment.resources.limits.memory }}
 {{- end -}}
 
-{{- define "main.ingress.matchers" }}
+{{- define "main.ingress.istio.matchers" }}
 {{- if ge (len .Values.main.ingress.paths) 1 }}
 {{- range .Values.main.ingress.paths }}
 - uri:
     prefix: {{ . }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "main.ingress.contour.matchers" }}
+{{- if ge (len .Values.main.ingress.paths) 1 }}
+{{- $fullname := include "main.service.fullname" . }}
+{{- $ingressPort := .Values.main.ingress.port }}
+{{- range .Values.main.ingress.paths }}
+- pathType: Prefix
+  path: {{ . }}
+  backend:
+    service:
+      name: {{ $fullname }}
+      port:
+        number: {{ $ingressPort }}
 {{- end -}}
 {{- end -}}
 {{- end -}}
