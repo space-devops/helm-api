@@ -1,8 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: api-configmap
+  name: {{ template "configmap.fullname" . }}
   namespace: {{ .Values.namespace.name }}
+  labels:
+    name: {{ template "configmap.fullname" . }}
+    version: {{ .Values.global.version }}
 data:
   config.yaml: |
     global:
