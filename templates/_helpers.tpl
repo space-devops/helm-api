@@ -26,6 +26,10 @@
 {{- printf "main-svc-%s" .Values.namespace.name }}
 {{- end }}
 
+{{- define "configmap.fullname" }}
+{{- printf "%-%-cm" .Values.global.prefix .Values.namespace.name }}
+{{- end -}}
+
 {{- define "main.container.security.context" }}
 securityContext:
   runAsUser: {{ .Values.main.security.context.userId }}
