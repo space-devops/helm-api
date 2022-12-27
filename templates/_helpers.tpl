@@ -27,8 +27,8 @@
 {{- end }}
 
 {{- define "configmap.fullname" }}
-{{- printf "%-%-cm" .Values.global.prefix .Values.namespace.name }}
-{{- end -}}
+{{- printf "%s-%s-cm" .Values.global.prefix .Values.namespace.name }}
+{{- end }}
 
 {{- define "main.container.security.context" }}
 securityContext:
