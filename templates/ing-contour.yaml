@@ -1,9 +1,14 @@
 {{- if .Values.main.ingress.contour.enable }}
+{{- $ingressName := "contour-ingress" }}
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: contour-ingress
+  name: {{ $ingressName }}
   namespace: {{ .Values.namespace.name }}
+  labels:
+    name: {{ $ingressName }}
+    version: {{ .Values.global.version }}
 spec:
   ingressClassName: {{ .Values.main.ingress.contour.ingressClassName }}
   rules:
