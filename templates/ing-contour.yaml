@@ -16,4 +16,8 @@ spec:
       http:
         paths:
           {{- include "main.ingress.contour.matchers" . | indent 10 }}
+    - host:  {{ .Values.main.ingress.grpc.host }}
+      http:
+        paths:
+          {{- include "main.ingress.contour.grpc" . | indent 10 }}
   {{- end -}}

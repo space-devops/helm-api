@@ -138,3 +138,14 @@ resources:
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "main.ingress.contour.grpc" }}
+{{- $backendService := include "main.service.fullname" . }}
+- backend:
+  service:
+    name: {{ $backendService }}
+    port:
+      number: {{ .Values.main.ingress.grpc.backend.port }}
+  pathType: Prefix
+  path: "/"
+{{- end -}}
