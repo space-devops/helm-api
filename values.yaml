@@ -13,7 +13,7 @@ main:
     replicas: 1
     image:
       name: "dockvalkyrie/api-mountebank"
-      version: "0.6.5"
+      version: "0.7.0"
     resources:
       request:
         memory: 512Mi
@@ -31,6 +31,7 @@ main:
     ports:
       - 3000
       - 2000
+      - 6990
     healthCheck:
       readiness:
         path: /ready
@@ -55,6 +56,10 @@ main:
       - "/planets"
       - "/planet"
     port: 3000
+    grpc:
+      host: mountebank.local.grpc
+      backend:
+        port: 6990
 
 init:
   deployment:

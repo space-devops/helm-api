@@ -6,6 +6,8 @@ metadata:
   labels:
     name: {{ template "main.service.fullname" . }}
     version: {{ .Values.global.version }}
+  annotations:
+    projectcontour.io/upstream-protocol.h2c: {{ .Values.main.ingress.grpc.backend.port | quote }}
 spec:
   type: {{ .Values.main.service.type }}
   selector:
