@@ -46,5 +46,5 @@ spec:
           configMap:
             name: {{ template "configmap.fullname" . }}
         - name: secret-volume
-          secretMap:
-            name: api-mountebank-secret
+          secret:
+            secretName: api-mountebank-secret
