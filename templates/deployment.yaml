@@ -39,7 +39,12 @@ spec:
           volumeMounts:
             - mountPath: /home/nonroot/.imposters/
               name: config-volume
+            - mountPath: /home/nonroot/.creds/
+              name: secret-volume
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "configmap.fullname" . }}
+        - name: secret-volume
+          secretMap:
+            name: api-mountebank-secret
