@@ -29,9 +29,12 @@ main:
   service:
     type: ClusterIP
     ports:
-      - 3000
-      - 2000
-      - 6990
+      - number: 3000
+        type: http
+      - number: 2000
+        type: http
+      - number: 6990
+        type: grpc
     healthCheck:
       readiness:
         path: /ready

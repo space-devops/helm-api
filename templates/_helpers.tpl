@@ -56,8 +56,8 @@ securityContext:
 {{- if ge (len .Values.main.service.ports) 0 }}
 ports:
 {{- range .Values.main.service.ports }}
-- containerPort: {{ . }}
-  name: {{ printf "svc-%d" (int .) }}
+- containerPort: {{ .number }}
+  name: {{ printf "svc-%d" (int .number) }}
   protocol: TCP
 {{- end -}}
 {{- end -}}
@@ -67,10 +67,17 @@ ports:
 {{- if ge (len .Values.main.service.ports) 0 }}
 ports:
 {{- range .Values.main.service.ports }}
-- port: {{ . }}
-  targetPort: {{ . }}
-  name: {{ printf "svc-%d" (int .) }}
+{{- if eq .type "http" }}
+- port: {{ .number }}
+  targetPort: {{ .number }}
+  name: {{ printf "%s-%d" .type (int .number) }}
   protocol: TCP
+{{- else }}
+- port: {{ .number }}
+  targetPort: {{ .number }}
+  name: {{ printf "%s" .type }}
+  protocol: TCP
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
