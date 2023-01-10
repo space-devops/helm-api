@@ -55,6 +55,7 @@ main:
       - "/"
       - "/planets"
       - "/planet"
+      - "/secrets"
     port: 3000
     grpc:
       host: mountebank.local.grpc
