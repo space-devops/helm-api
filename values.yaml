@@ -46,9 +46,9 @@ main:
         failures: 2
   ingress:
     istio:
-      enable: false
-    contour:
       enable: true
+    contour:
+      enable: false
       ingressClassName: contour
     host: mountebank.local.io
     paths:
