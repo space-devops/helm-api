@@ -2,6 +2,9 @@
 {{- $ingressName := "mountebank-gateway" }}
 {{- $vsName := "mountebank-vs" }}
 
+{{- $grpcIngressName := "mountebank-gateway-grpc" }}
+{{- $grpcVsName := "mountebank-vs-grpc" }}
+
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -38,5 +41,44 @@ spec:
         - destination:
             port:
               number: {{ .Values.main.ingress.port }}
+            host: {{ template "main.service.fullname" . }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ $grpcIngressName }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    name: {{ $grpcIngressName }}
+    version: {{ .Values.global.version }}
+spec:
+  selector:
+    istio: gateway # use Istio default gateway implementation
+  servers:
+    - port:
+        number: 80
+        name: grpc
+        protocol: GRPC
+      hosts:
+        - {{ .Values.main.ingress.grpc.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ $grpcVsName }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  hosts:
+    - {{ .Values.main.ingress.grpc.host }}
+  gateways:
+    - {{ $grpcIngressName }}
+  http:
+    - match:
+        - uri:
+            prefix: "/"
+      route:
+        - destination:
+            port:
+              number: {{ .Values.main.ingress.grpc.backend.port }}
             host: {{ template "main.service.fullname" . }}
 {{- end -}}
