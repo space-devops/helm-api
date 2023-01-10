@@ -12,14 +12,14 @@ metadata:
     version: {{ .Values.global.version }}
 spec:
   selector:
-    istio: ingressgateway # use Istio default gateway implementation
+    istio: gateway # use Istio default gateway implementation
   servers:
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
-        - "mountebank.local.io"
+        - {{ .Values.main.ingress.host }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
